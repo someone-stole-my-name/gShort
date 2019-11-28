@@ -33,5 +33,7 @@ jobs:
         fi
     - name: Build
       run: |
-        export GO111MODULE=auto
-        cd $HOME/go/src/github.com/$GITHUB_REPOSITORY && go build .
+        cd $HOME/go/src/github.com/$GITHUB_REPOSITORY
+        ls -la
+        pwd
+        go build *.go

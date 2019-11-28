@@ -1,0 +1,20 @@
+{
+  "Domain": "gshort.christiansegundo.com",
+  "Port": 443,
+  "Protocol": "https",
+  "SiteName": "URL Shortener",
+  "TagLine": "A f* URL Shortener that just works",
+  "MongoDB": {
+    "URI": "mongodb+srv://XXXXX:XXXXX@cluster1-agata.mongodb.net/",
+    "DataBase": "gshort",
+    "Collection": "maps"
+  },
+  "RandomStringGenerator": {
+    "Charset": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+    "Length": 7
+  },
+  "ReCaptcha": {
+    "SiteKey": "XXXXXXXX",
+    "SecretKey": "XXXXXX"
+  }
+}

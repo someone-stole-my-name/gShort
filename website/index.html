@@ -7,12 +7,12 @@
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css" />
 		<link rel="stylesheet" href="assets/css/main.css" />
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
-		<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+		<script type="text/javascript" defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+		<script type="text/javascript" defer src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
+		<script type="text/javascript" defer src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
+		<script type="text/javascript" defer src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 		{{- if .ReCaptcha.SiteKey }}
-		<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
+		<script type="text/javascript" async src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
 		{{- end }}
 	</head>
 	<body class="is-preload">

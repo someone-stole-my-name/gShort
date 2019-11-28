@@ -32,4 +32,6 @@ jobs:
             dep ensure
         fi
     - name: Build
-      run: cd $HOME/go/src/github.com/$GITHUB_REPOSITORY && go build .
+      run: |
+        export GO111MODULE=auto
+        cd $HOME/go/src/github.com/$GITHUB_REPOSITORY && go build .

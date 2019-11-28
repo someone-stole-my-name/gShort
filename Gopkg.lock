@@ -46,6 +46,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:031381fa658778e5400e27ef4b2cc9649ce725f0716718c96ca659086bcbcd4f"
+  name = "github.com/someone-stole-my-name/reCAPTCHAv3"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "25bf1e1cef77ae3bd696869c658ea5965cb0c6cb"
+
+[[projects]]
+  branch = "master"
   digest = "1:40fdfd6ab85ca32b6935853bbba35935dcb1d796c8135efd85947566c76e662e"
   name = "github.com/xdg/scram"
   packages = ["."]
@@ -135,6 +143,7 @@
     "github.com/GeertJohan/go.rice",
     "github.com/GeertJohan/go.rice/embedded",
     "github.com/gorilla/mux",
+    "github.com/someone-stole-my-name/reCAPTCHAv3",
     "go.mongodb.org/mongo-driver/bson",
     "go.mongodb.org/mongo-driver/mongo",
     "go.mongodb.org/mongo-driver/mongo/options",

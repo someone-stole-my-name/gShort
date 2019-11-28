@@ -1,37 +1,38 @@
 package main
 
 import (
-	"gShort/Config"
-	"gShort/DataBase"
-	"gShort/reCAPTCHAv3"
 	"encoding/json"
 	"fmt"
-	rice "github.com/GeertJohan/go.rice"
-	"github.com/gorilla/mux"
+	"gShort/Config"
+	"gShort/DataBase"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"github.com/someone-stole-my-name/reCAPTCHAv3"
 	"strconv"
+
+	rice "github.com/GeertJohan/go.rice"
+	"github.com/gorilla/mux"
 )
 
 // This is how are request to the backend looks like
 type gShortPutRequest struct {
-	Url         string `json:"url"`		// url to 'short'
-	Token		string `json:"token"`	// captcha token (if active)
+	Url   string `json:"url"`   // url to 'short'
+	Token string `json:"token"` // captcha token (if active)
 }
 
 // This is how are response to the backend looks like
 type gShortGetResponse struct {
-	Url 	string `json:"url"`	// 'shorted' url
+	Url     string `json:"url"`     // 'shorted' url
 	Mapping string `json:"mapping"` // mapping is just the random string associated with that url
 }
 
 func main() {
 	var (
 		config *Config.Config //json config
-		index string // templated index
-		err error
+		index  string         // templated index
+		err    error
 	)
 
 	args := *Config.ParseArgs()
@@ -54,7 +55,6 @@ func main() {
 
 		gShortPut(config, w, r)
 	}).Methods("POST")
-
 
 	router.PathPrefix("/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ func main() {
 			}
 		}).Methods("GET")
 
-		// CORS Headers
+	// CORS Headers
 	router.PathPrefix("/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
@@ -124,7 +124,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	mappingInDB, err := DataBase.FilterFromURL(config.MongoDB, a.Url)
 	if err == nil {
 		mapping := buildMapping(config, mappingInDB)
-		resBody := gShortGetResponse{Url:a.Url, Mapping:mapping}
+		resBody := gShortGetResponse{Url: a.Url, Mapping: mapping}
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resBody)
 		return
@@ -150,7 +150,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	// Prevent returning stuff like http://localhost/XXXX when port != 80
 	mapped := buildMapping(config, mapping)
 
-	resBody := gShortGetResponse{Url:a.Url, Mapping:mapped}
+	resBody := gShortGetResponse{Url: a.Url, Mapping: mapped}
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(resBody)
 }
@@ -169,11 +169,11 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func ListenAndServe(config *Config.Config, router *mux.Router){
+func ListenAndServe(config *Config.Config, router *mux.Router) {
 	log.Printf("Using DB: %v\nUsing Col: %v\n", config.MongoDB.DataBase, config.MongoDB.Collection)
 	// Since config.Port is used in many places ...
 	port := os.Getenv("PORT") // heroku
-	if port != "" { // if env exists
+	if port != "" {           // if env exists
 		log.Printf("Listening on: %v", port)
 		log.Fatal(http.ListenAndServe(":"+port, router))
 	} else {

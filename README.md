@@ -14,26 +14,26 @@ gShort requires a json configuration file, you can check the one that demo site 
 
 #### General
 
- * "Domain": The domain or IP where gShort will be accesed from. (**Required**)
- * "Port": The port where gShort will listen for incoming requests. (**Required but can be overridden**)
- * "Protocol": The protocol that users will use to access gShort. **This is not the protocol that gShort will use**, only HTTP is supported. Eg: If running on Heroku or behind a reverse proxy configured with SSL this should be HTTPS. (**Required**)
- * "SiteName": HTML Title of your page. (**Required**)
- * "TagLine": (**Required**)
+ * **Domain**: The domain or IP where gShort will be accesed from. (**Required**)
+ * **Port**: The port where gShort will listen for incoming requests. (**Required but can be overridden**)
+ * **Protocol**: The protocol that users will use to access gShort. **This is not the protocol that gShort will use**, only HTTP is supported. Eg: If running on Heroku or behind a reverse proxy configured with SSL this should be HTTPS. (**Required**)
+ * **SiteName**: HTML Title of your page. (**Required**)
+ * **TagLine**: (**Required**)
   
 #### MongoDB
 
- * "URI": Format `mongodb+srv://$USER:$PASSWORD@cluster1-agata.mongodb.net/` (**Required but can be overridden**)
- * "DataBase": MongoDB Database to use. (**Required but can be overridden**)
- * "Collection": MongoDB Collection to use. (**Required but can be overridden**)
+ * **URI**: Format `mongodb+srv://$USER:$PASSWORD@cluster1-agata.mongodb.net/` (**Required but can be overridden**)
+ * **DataBase**: MongoDB Database to use. (**Required but can be overridden**)
+ * **Collection**: MongoDB Collection to use. (**Required but can be overridden**)
 
 #### RandomStringGenerator
 
- * "Charset": Charset used when generating short URLs. (**Required**)
- * "Length": Length of the generated random strings. (**Required**)
+ * **Charset**: Charset used when generating short URLs. (**Required**)
+ * **Length**: Length of the generated random strings. (**Required**)
 
 #### ReCaptcha
- * "SiteKey": Google's reCAPTCHAv3 Key, if you don't have one of theese just leave it as `""`.  (**Optional and can be overridden**)
- * "SecretKey": Google's reCAPTCHAv3 Secret Key, if you don't have one of theese just leave it as `""` (**Optional and can be overridden**)
+ * **SiteKey**: Google's reCAPTCHAv3 Key, if you don't have one of theese just leave it as `""`.  (**Optional and can be overridden**)
+ * **SecretKey**: Google's reCAPTCHAv3 Secret Key, if you don't have one of theese just leave it as `""` (**Optional and can be overridden**)
 
 ## Heroku (or other PaaS)
 

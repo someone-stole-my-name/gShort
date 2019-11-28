@@ -1,1 +1,1 @@
-web: bin/GoShort --config=heroku-config.json
+web: bin/gShort --config=heroku-config.json

@@ -25,7 +25,7 @@
 #   unused-packages = true
 
 [metadata.heroku]
-  root-package = "GoShort"
+  root-package = "gShort"
 
 [[constraint]]
   name = "github.com/GeertJohan/go.rice"

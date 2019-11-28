@@ -1,9 +1,9 @@
 package main
 
 import (
-	"GoShort/Config"
-	"GoShort/DataBase"
-	"GoShort/reCAPTCHAv3"
+	"gShort/Config"
+	"gShort/DataBase"
+	"gShort/reCAPTCHAv3"
 	"encoding/json"
 	"fmt"
 	rice "github.com/GeertJohan/go.rice"

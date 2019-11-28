@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	rice "github.com/GeertJohan/go.rice"
-	"GoShort/Config"
+	"gShort/Config"
 	"math/rand"
 	"net/http"
 	"net/url"

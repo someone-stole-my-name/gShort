@@ -1,7 +1,7 @@
 package DataBase
 
 import (
-	"GoShort/Config"
+	"gShort/Config"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

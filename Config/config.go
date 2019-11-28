@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
+	"os"
 )
 
 type Args struct {
@@ -52,5 +53,37 @@ func (*Config) LoadConfigFrom(file string) (config *Config, err error) {
 	if err = json.Unmarshal(ConfigFileByteArr, &config); err != nil {
 		return
 	}
+	config.checkENV()
 	return
+}
+
+// Override some settings using ENV (heroku)
+func (config *Config) checkENV () *Config {
+	// TODO REWORK THIS CRAP
+	i := os.Getenv("ReCaptcha_SiteKey") // heroku
+	if i != "" { // if env exists
+		config.ReCaptcha.SiteKey = i
+	}
+
+	i = os.Getenv("ReCaptcha_SecretKey") // heroku
+	if i != "" { // if env exists
+		config.ReCaptcha.SecretKey = i
+	}
+
+	i = os.Getenv("MongoDB_URI") // heroku
+	if i != "" { // if env exists
+		config.MongoDB.URI = i
+	}
+
+	i = os.Getenv("MongoDB_DataBase") // heroku
+	if i != "" { // if env exists
+		config.MongoDB.DataBase = i
+	}
+
+	i = os.Getenv("MongoDB_Collection") // heroku
+	if i != "" { // if env exists
+		config.MongoDB.Collection = i
+	}
+
+	return config
 }

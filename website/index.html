@@ -4,10 +4,6 @@
 		<title>gShort | {{ .SiteName }}</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		{{- if .ReCaptcha.SiteKey }}
-		<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
-		{{- end }}
 	</head>
 	<body class="is-preload">
 			<div id="wrapper">
@@ -40,9 +36,13 @@
 					</section>
 					<footer id="footer">
 
+						<link rel="stylesheet" href="assets/css/main.css" />
 						<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css" />
 						<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css" />
 
+						{{- if .ReCaptcha.SiteKey }}
+						<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
+						{{- end }}
 						<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 						<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
 						<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>

@@ -4,6 +4,8 @@
 ![Dependencies](https://img.shields.io/librariesio/github/someone-stole-my-name/gShort)
 ![License](https://img.shields.io/github/license/someone-stole-my-name/gShort?color=green)
 
+![Screenshot](https://github.com/someone-stole-my-name/gShort/raw/master/Examples/Screenshot.png)
+
 ## Overview
 
 gShort is a URL shortener that you can selfhost or easily deploy to a PaaS. ([Demo Site on Heroku][gshort_demo_site])

@@ -170,6 +170,7 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 }
 
 func ListenAndServe(config *Config.Config, router *mux.Router){
+	log.Printf("Using DB: %v\nUsing Col: %v\n", config.MongoDB.DataBase, config.MongoDB.Collection)
 	// Since config.Port is used in many places ...
 	port := os.Getenv("PORT") // heroku
 	if port != "" { // if env exists

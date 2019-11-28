@@ -34,5 +34,5 @@ jobs:
     - name: Build
       run: |
         cd $HOME/go/src/github.com/$GITHUB_REPOSITORY && mkdir vendor/gShort
-        mv {Config,DataBase,reCAPTCHAv3} vendor/gShort
+        mv {Config,DataBase} vendor/gShort
         go build *.go

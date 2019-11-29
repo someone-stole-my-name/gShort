@@ -46,6 +46,23 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	if args.JustTemplate {
+		_ = os.Mkdir("./_templates", 0770)
+		f, err := os.Create("./_templates/index.html")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		_, err = f.WriteString(index)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = f.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		return
+	}
+
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/short", func(w http.ResponseWriter, r *http.Request) {
 		if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
@@ -133,14 +150,14 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	// Generate a new random string
 	mapping := generateStringWithCharset(config.RandomStringGenerator.Length, config.RandomStringGenerator.Charset)
 	for {
-		_, err = DataBase.FilterFromMapping(config.MongoDB, mapping) // Check if that string is already is DB
-		if err != nil {
-			break // If it is not break the loop
+		if !DataBase.MappingExists(config.MongoDB, mapping) {
+			break
 		}
 		mapping = generateStringWithCharset(config.RandomStringGenerator.Length, config.RandomStringGenerator.Charset)
 	}
 
-	_, err = DataBase.Insert(config.MongoDB, a.Url, mapping)
+	record := DataBase.Record{Url:a.Url, Mapping:mapping, Password:a.Password}
+	_, err = DataBase.Insert(config.MongoDB, &record)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("Error writing to database: %v", err)
@@ -170,7 +187,8 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 }
 
 func ListenAndServe(config *Config.Config, router *mux.Router) {
-	log.Printf("Using DB: %v\nUsing Col: %v\n", config.MongoDB.DataBase, config.MongoDB.Collection)
+	log.Printf("Using DB: %v\n", config.MongoDB.DataBase)
+	log.Printf("Using Col %v\n", config.MongoDB.Collection)
 	// Since config.Port is used in many places ...
 	port := os.Getenv("PORT") // heroku
 	if port != "" {           // if env exists

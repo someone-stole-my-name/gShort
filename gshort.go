@@ -166,6 +166,10 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, mapsTo, http.StatusMovedPermanently)
+	err = DataBase.IncreaseHitCount(config.MongoDB, mapping)
+	if err != nil {
+		log.Printf("Error while increasing hitcount: %v", err)
+	}
 	return
 }
 

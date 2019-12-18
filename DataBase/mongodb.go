@@ -1,8 +1,8 @@
 package DataBase
 
 import (
-	"gShort/Config"
 	"context"
+	"gShort/Config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -93,7 +93,7 @@ func FilterFromURL(a *Config.MongoDB, url string) (result string, err error) {
 func IsPasswordProtected(a *Config.MongoDB, mapping string) (b bool, password string, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
-		return
+		retur
 	}
 	r := Record{}
 	filter := bson.D{{"mapping", mapping}}
@@ -108,4 +108,21 @@ func IsPasswordProtected(a *Config.MongoDB, mapping string) (b bool, password st
 		password = r.Password
 	}
 	return
+}
+
+//Increases hitcount of a mapping by 1
+func IncreaseHitCount(a *Config.MongoDB, mapping string) error {
+	client, collection, err := newClient(a)
+	if err != nil {
+		return err
+	}
+	filter := bson.D{{"mapping", mapping}}
+	update := bson.D{
+		{"$inc", bson.D{
+			{"hitcount", 1},
+		}},
+	}
+	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	err = client.Disconnect(context.TODO())
+	return err
 }

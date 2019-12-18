@@ -93,7 +93,7 @@ func FilterFromURL(a *Config.MongoDB, url string) (result string, err error) {
 func IsPasswordProtected(a *Config.MongoDB, mapping string) (b bool, password string, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
-		retur
+		return
 	}
 	r := Record{}
 	filter := bson.D{{"mapping", mapping}}

@@ -21,6 +21,12 @@
 								<div class="field">
 									<input type="text" name="url" id="url" placeholder="URL" />
 								</div>
+								<div class="field">
+									<input type="text" class="passwordinput" name="passwordinput" id="passwordinput" placeholder="Password" style="visiblity:hidden"/>
+								</div>
+								<div class="field">
+									<input type="checkbox" class="password" id="password" name="password" /><label for="password">Password protect</label>
+								</div>
 							</div>
 							<ul class="actions special">
 								<li><input type="button" class="button" id="button" value="Shorten URL" /></li>
@@ -77,12 +83,22 @@
 
 				// Github forkme popup
 				$(document).ready(function () {
+					// Hide password field
+					$(".passwordinput").hide();
 					$('.fa-github')
 					.popup({
 						inline     : true,
 						hoverable  : true
-					})
-				;
+					});
+
+					$(".password").change(function(){
+						if($(this).is(":checked")) {
+							$(".passwordinput").fadeIn();
+						} else if($(this).is(":not(:checked)")){
+							$(".passwordinput").fadeOut();
+							$(".passwordinput").val("");
+						}
+					});
 
 				var popupTimer;
 				function delayPopup(popup) {
@@ -110,7 +126,8 @@
 						if(validURL(document.getElementById("url").value)) {
 								var http = new XMLHttpRequest();
 								var endpoint = "{{ .Protocol }}://{{ .Domain }}:{{ .Port }}/short";
-								var url = document.getElementById("url").value
+								var url = document.getElementById("url").value;
+								var password = document.getElementById("passwordinput").value;
 								http.open("POST", endpoint, true);
 								recaptcha = document.getElementById('recaptcha').value;
 								http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -121,7 +138,7 @@
 										document.getElementById("url").value = json.mapping;
 									}
 								}
-								http.send(JSON.stringify({url:url,token:recaptcha}));
+								http.send(JSON.stringify({url:url,token:recaptcha,password:password}));
 						} else {
 							$("#url").animate({
 								backgroundColor: 'rgba(255, 116, 150, .5)',

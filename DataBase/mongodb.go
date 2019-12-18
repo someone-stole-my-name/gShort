@@ -11,6 +11,7 @@ import (
 type Record struct {
 	Url 	string `json:"url"`
 	Mapping string `json:"maps"`
+	Password string `json:"url"`
 }
 
 // Boilerplate to connect to MongoDB and return a client and collection ready to use
@@ -30,12 +31,12 @@ func newClient(a *Config.MongoDB) (client *mongo.Client, collection *mongo.Colle
 }
 
 // Create a new mapping in the DB
-func Insert(a *Config.MongoDB, url string, mapping string) (result *mongo.InsertOneResult, err error) {
+func Insert(a *Config.MongoDB, url string, mapping string, password string) (result *mongo.InsertOneResult, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
 		return
 	}
-	rb := Record{Url:url, Mapping:mapping}
+	rb := Record{Url:url, Mapping:mapping, Password:password}
 	result, err = collection.InsertOne(context.TODO(), rb)
 	if err != nil {
 		return
@@ -86,5 +87,25 @@ func FilterFromURL(a *Config.MongoDB, url string) (result string, err error) {
 		return
 	}
 	result = r.Mapping
+	return
+}
+
+func IsPasswordProtected(a *Config.MongoDB, mapping string) (b bool, password string, err error) {
+	client, collection, err := newClient(a)
+	if err != nil {
+		return
+	}
+	r := Record{}
+	filter := bson.D{{"mapping", mapping}}
+
+	err = collection.FindOne(context.TODO(), filter).Decode(&r)
+	err = client.Disconnect(context.TODO())
+	if err != nil {
+		return
+	}
+	if len(r.Password) > 0 {
+		b = true
+		password = r.Password
+	}
 	return
 }

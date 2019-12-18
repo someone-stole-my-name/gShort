@@ -9,6 +9,7 @@ import (
 
 type Args struct {
 	ConfigFile string
+	JustTemplate bool
 }
 
 type Config struct {
@@ -41,6 +42,7 @@ type RandomStringGenerator struct {
 func ParseArgs() *Args {
 	a := &Args{}
 	flag.StringVar(&a.ConfigFile, "config", "", "JSON Config File")
+	flag.BoolVar(&a.JustTemplate, "templateonly", false, "Create a _template directory with the templated HTMLs")
 	flag.Parse()
 	return a
 }

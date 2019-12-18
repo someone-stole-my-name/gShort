@@ -10,6 +10,10 @@
 
 gShort is a URL shortener that you can selfhost or easily deploy to a PaaS. ([Demo Site on Heroku][gshort_demo_site])
 
+### Features
+
+ * Password protected links
+
 ## Configuration
 
 gShort requires a json configuration file, you can check the one that demo site uses [here][example_config].

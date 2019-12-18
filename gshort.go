@@ -20,12 +20,14 @@ import (
 type gShortPutRequest struct {
 	Url   string `json:"url"`   // url to 'short'
 	Token string `json:"token"` // captcha token (if active)
+	Password string `json:"password"` // url password if set
 }
 
 // This is how are response to the backend looks like
 type gShortGetResponse struct {
 	Url     string `json:"url"`     // 'shorted' url
 	Mapping string `json:"mapping"` // mapping is just the random string associated with that url
+	Password string `json:"password"`
 }
 
 func main() {
@@ -46,6 +48,25 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	if args.JustTemplate {
+		_ = os.Mkdir("./_templates", 0770)
+
+		f, err := os.Create("./_templates/index.html")
+		if err != nil {
+			log.Fatalln(err)
+		}
+		_, err = f.WriteString(index)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = f.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		return
+	}
+
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/short", func(w http.ResponseWriter, r *http.Request) {
 		if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
@@ -55,6 +76,20 @@ func main() {
 
 		gShortPut(config, w, r)
 	}).Methods("POST")
+
+	router.PathPrefix("/password/").HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
+				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port)+r.RequestURI, http.StatusMovedPermanently)
+				return
+			}
+
+			box := rice.MustFindBox("website")
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			password, _ := box.String("password.html")
+			_, _ = fmt.Fprint(w, password)
+			return
+		}).Methods("GET")
 
 	router.PathPrefix("/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
@@ -121,13 +156,15 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	mappingInDB, err := DataBase.FilterFromURL(config.MongoDB, a.Url)
-	if err == nil {
-		mapping := buildMapping(config, mappingInDB)
-		resBody := gShortGetResponse{Url: a.Url, Mapping: mapping}
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(resBody)
-		return
+	if len(a.Password) == 0 { // Password protected urls will return false bypassing the check, always create a new mapping
+		mappingInDB, err := DataBase.FilterFromURL(config.MongoDB, a.Url)
+		if err == nil {
+			mapping := buildMapping(config, mappingInDB)
+			resBody := gShortGetResponse{Url: a.Url, Mapping: mapping}
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(resBody)
+			return
+		}
 	}
 
 	// Generate a new random string
@@ -140,7 +177,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		mapping = generateStringWithCharset(config.RandomStringGenerator.Length, config.RandomStringGenerator.Charset)
 	}
 
-	_, err = DataBase.Insert(config.MongoDB, a.Url, mapping)
+	_, err = DataBase.Insert(config.MongoDB, a.Url, mapping, a.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("Error writing to database: %v", err)
@@ -157,6 +194,41 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 
 func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	mapping := trimLeftChar(r.RequestURI)
+	var a gShortGetResponse
+
+	b, p, err := DataBase.IsPasswordProtected(config.MongoDB, mapping)
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	if len(reqBody) > 0 {
+		err = json.Unmarshal(reqBody, &a)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	if b && len(r.Header.Get("Key")) == 0 { // password protected url and no password provided
+		http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port)+"/password/"+mapping, http.StatusFound)
+		return
+	}
+
+	if r.Header.Get("Key") != p {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	if b && r.Header.Get("Key") == p {
+		mapsTo, err := DataBase.FilterFromMapping(config.MongoDB, mapping)
+		w.Header().Set("Location", mapsTo)
+		if err != nil {
+			log.Printf("Error: %v", err)
+			http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port),
+				http.StatusMovedPermanently)
+			return
+		}
+		w.WriteHeader(http.StatusAccepted)
+		return
+	}
+
 	mapsTo, err := DataBase.FilterFromMapping(config.MongoDB, mapping)
 	if err != nil {
 		log.Printf("Error: %v", err)
@@ -174,7 +246,8 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 }
 
 func ListenAndServe(config *Config.Config, router *mux.Router) {
-	log.Printf("Using DB: %v\nUsing Col: %v\n", config.MongoDB.DataBase, config.MongoDB.Collection)
+	log.Printf("Using DB: %v\n", config.MongoDB.DataBase)
+	log.Printf("Using Col: %v\n", config.MongoDB.Collection)
 	// Since config.Port is used in many places ...
 	port := os.Getenv("PORT") // heroku
 	if port != "" {           // if env exists

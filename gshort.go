@@ -21,7 +21,7 @@ type gShortPutRequest struct {
 	Url   string `json:"url"`   // url to 'short'
 	Token string `json:"token"` // captcha token (if active)
 	Password string `json:"password"` // url password if set
-	MaxHitCount string `json:"maxhitcount"`
+	MaxHitCount int `json:"maxhitcount"`
 }
 
 // This is how are response to the backend looks like
@@ -195,6 +195,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 
 func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	mapping := trimLeftChar(r.RequestURI)
+	log.Printf("Requested %v\n", mapping)
 	var a gShortGetResponse
 
 	b, p, err := DataBase.IsPasswordProtected(config.MongoDB, mapping)
@@ -207,7 +208,8 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if b && len(r.Header.Get("Key")) == 0 { // password protected url and no password provided
+	if b && len(r.Header.Get("Key")) == 0 {
+		log.Printf("Password protected mapping %v and no password provided, redirecting to password page.", mapping)
 		http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port)+"/password/"+mapping, http.StatusFound)
 		return
 	}
@@ -247,7 +249,6 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error in hitCounter: %v", err)
 	}
-
 	return
 }
 

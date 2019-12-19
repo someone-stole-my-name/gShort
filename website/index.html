@@ -30,7 +30,7 @@
                         <div class="content">
                             <input type="password" class="passwordinput" name="passwordinput" id="passwordinput"
                                    placeholder="Link Password"/>
-                            <div class="ui icon input">
+                            <div class="ui icon input" style="width: 100%;">
                                 <input type="number" class="maxhitcount" id="maxhitcount" min="0" max="65000"
                                        placeholder="TTL"/>
                                 <i class="maxhitcount question circle outline link icon"></i>
@@ -163,8 +163,9 @@
                 var endpoint = "{{ .Protocol }}://{{ .Domain }}:{{ .Port }}/short";
                 var url = document.getElementById("url").value;
                 var password = document.getElementById("passwordinput").value;
+                var ttl = document.getElementById("maxhitcount").value;
                 http.open("POST", endpoint, true);
-                recaptcha = document.getElementById('recaptcha').value;
+                var recaptcha = document.getElementById('recaptcha').value;
                 http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 http.setRequestHeader('Access-Control-Allow-Headers', '*');
                 http.onreadystatechange = function () {
@@ -173,7 +174,7 @@
                         document.getElementById("url").value = json.mapping;
                     }
                 }
-                http.send(JSON.stringify({url: url, token: recaptcha, password: password}));
+                http.send(JSON.stringify({url: url, token: recaptcha, password: password, maxhitcount:parseInt(ttl)}));
             } else {
                 $("#url").animate({
                     backgroundColor: 'rgba(255, 116, 150, .5)',

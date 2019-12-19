@@ -158,9 +158,6 @@
 #passwordinput {
 	margin-bottom: 10px;
 }
-.ui.icon.input {
-	width: 100%;
-}
 .ui.popup > .header + .content {
 	padding: initial;
 	letter-spacing: inherit;

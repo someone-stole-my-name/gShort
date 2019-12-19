@@ -12,8 +12,8 @@ type Record struct {
 	Url 	string `json:"url"`
 	Mapping string `json:"maps"`
 	Password string `json:"url"`
-	HitCount string `json:"hitcount"`
-	MaxHitCount string `json:"maxhitcount"`
+	HitCount int `json:"hitcount"`
+	MaxHitCount int `json:"maxhitcount"`
 }
 
 // Boilerplate to connect to MongoDB and return a client and collection ready to use
@@ -34,12 +34,12 @@ func newClient(a *Config.MongoDB) (client *mongo.Client, collection *mongo.Colle
 }
 
 // Create a new mapping in the DB
-func Insert(a *Config.MongoDB, url string, mapping string, password string, maxhitcount string) (result *mongo.InsertOneResult, err error) {
+func Insert(a *Config.MongoDB, url string, mapping string, password string, maxhitcount int) (result *mongo.InsertOneResult, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
 		return
 	}
-	rb := Record{Url:url, Mapping:mapping, Password:password, HitCount:"0", MaxHitCount:maxhitcount}
+	rb := Record{Url:url, Mapping:mapping, Password:password, HitCount:0, MaxHitCount:maxhitcount}
 	result, err = collection.InsertOne(context.TODO(), rb)
 	if err != nil {
 		return
@@ -129,6 +129,12 @@ func IncreaseHitCount(a *Config.MongoDB, mapping string) (r* Record, err error) 
 	if err != nil {
 		return
 	}
+
+	err = collection.FindOne(context.TODO(), filter).Decode(&r)
+	if err != nil {
+		return
+	}
+
 	err = client.Disconnect(context.TODO())
 	return
 }

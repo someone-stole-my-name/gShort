@@ -2,9 +2,9 @@ package main
 
 import (
 	"bytes"
+	"gShort/Config"
 	"gShort/DataBase"
 	rice "github.com/GeertJohan/go.rice"
-	"gShort/Config"
 	"log"
 	"math/rand"
 	"net/http"
@@ -20,10 +20,12 @@ func hitCounter(config *Config.Config, mapping string) (err error) {
 	if err != nil {
 		log.Printf("Error while increasing hitcount: %v", err)
 	}
-	if record.HitCount >= record.MaxHitCount {
-		err = record.Delete(config.MongoDB)
-		if err != nil {
-			log.Printf("Error while deleting record: %v", err)
+	if record.MaxHitCount > 0 {
+		if record.HitCount >= record.MaxHitCount {
+			err = record.Delete(config.MongoDB)
+			if err != nil {
+				log.Printf("Error while deleting record: %v", err)
+			}
 		}
 	}
 	return

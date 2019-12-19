@@ -21,6 +21,7 @@ type gShortPutRequest struct {
 	Url   string `json:"url"`   // url to 'short'
 	Token string `json:"token"` // captcha token (if active)
 	Password string `json:"password"` // url password if set
+	MaxHitCount string `json:"maxhitcount"`
 }
 
 // This is how are response to the backend looks like
@@ -177,7 +178,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		mapping = generateStringWithCharset(config.RandomStringGenerator.Length, config.RandomStringGenerator.Charset)
 	}
 
-	_, err = DataBase.Insert(config.MongoDB, a.Url, mapping, a.Password)
+	_, err = DataBase.Insert(config.MongoDB, a.Url, mapping, a.Password, a.MaxHitCount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("Error writing to database: %v", err)
@@ -226,6 +227,10 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(http.StatusAccepted)
+		err = hitCounter(config, mapping)
+		if err != nil {
+			log.Printf("Error in hitCounter: %v", err)
+		}
 		return
 	}
 
@@ -238,10 +243,11 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, mapsTo, http.StatusMovedPermanently)
-	err = DataBase.IncreaseHitCount(config.MongoDB, mapping)
+	err = hitCounter(config, mapping)
 	if err != nil {
-		log.Printf("Error while increasing hitcount: %v", err)
+		log.Printf("Error in hitCounter: %v", err)
 	}
+
 	return
 }
 

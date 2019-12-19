@@ -1,178 +1,221 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>gShort | {{ .SiteName }}</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css" />
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-	</head>
-	<body class="is-preload">
-			<div id="wrapper">
-					<section id="main">
-						<header>
-							<h1>gShort</h1>
-						</header>
-						<hr />
-						<h2>{{ .TagLine }}</h2>
-						<form>
-							<div class="fields">
-								<div class="field">
-									<input type="text" name="url" id="url" placeholder="URL" />
-								</div>
-								<div class="field">
-									<input type="text" class="passwordinput" name="passwordinput" id="passwordinput" placeholder="Password" style="visiblity:hidden"/>
-								</div>
-								<div class="field">
-									<input type="checkbox" class="password" id="password" name="password" /><label for="password">Password protect</label>
-								</div>
-							</div>
-							<ul class="actions special">
-								<li><input type="button" class="button" id="button" value="Shorten URL" /></li>
-								<li><button class="clipboardbutton" type="button"><i class="fas fa-copy"></i></button></li>
-							</ul>
-							{{- if .ReCaptcha.SiteKey }}
-							<input type="hidden" id="recaptcha" name="recaptcha">
-							{{- end }}
-						</form>
-						<hr />
-						<footer>
-							<ul class="icons">
-								<li><a href="https://github.com/someone-stole-my-name/gShort" class="icon brands fa-github" data-content="Fork me on Github">Github</a></li>
-							</ul>
-						</footer>
-					</section>
-					<footer id="footer">
+<head>
+    <title>gShort | {{ .SiteName }}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+</head>
+<body class="is-preload">
+<div id="wrapper">
+    <section id="main">
+        <header>
+            <h1>gShort</h1>
+        </header>
+        <hr/>
+        <h2>{{ .TagLine }}</h2>
+        <form>
+            <div class="fields">
+                <div class="field">
+                    <input type="text" name="url" id="url" placeholder="URL"/>
+                </div>
+                <div class="field">
+                    <div class="ui styled accordion">
+                        <div class="title">
+                            <i class="fas fa-caret-down"></i>
+                            Advanced Options
+                        </div>
+                        <div class="content">
+                            <input type="password" class="passwordinput" name="passwordinput" id="passwordinput"
+                                   placeholder="Link Password"/>
+                            <div class="ui icon input">
+                                <input type="number" class="maxhitcount" id="maxhitcount" min="0" max="65000"
+                                       placeholder="TTL"/>
+                                <i class="maxhitcount question circle outline link icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-						{{- if .ReCaptcha.SiteKey }}
-						<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
-						{{- end }}
-						<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-						<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
-						<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
-						<script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
+            <ul class="actions special">
+                <li><input type="button" class="button" id="button" value="Shorten URL"/></li>
+                <li>
+                    <button class="clipboardbutton" type="button"><i class="fas fa-copy"></i></button>
+                </li>
+            </ul>
+            {{- if .ReCaptcha.SiteKey }}
+                <input type="hidden" id="recaptcha" name="recaptcha">
+            {{- end }}
+        </form>
+        <hr/>
+        <footer>
+            <ul class="icons">
+                <li><a href="https://github.com/someone-stole-my-name/gShort" class="icon brands fa-github"
+                       data-content="Fork me on Github">Github</a></li>
+            </ul>
+        </footer>
+    </section>
+    <footer id="footer">
 
-						<ul class="copyright">
-							<li>With ❤️ from Madrid</li>
-							<li>Design by <a href="https://twitter.com/ajlkn">@ajlkn</a></li>
-						</ul>
-						{{- if .ReCaptcha.SiteKey }}
-						<ul class="copyright">
-							<li>
-								<small>This site is protected by reCAPTCHA and the Google
-									<a href="https://policies.google.com/privacy">Privacy Policy</a> and
-									<a href="https://policies.google.com/terms">Terms of Service</a> apply.
-								</small>
-							</li>
-						</ul>
-						{{- end }}
-					</footer>
-			</div>
+        {{- if .ReCaptcha.SiteKey }}
+            <script type="text/javascript"
+                    src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
+        {{- end }}
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        <script type="text/javascript"
+                src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 
-		<!-- Scripts -->
-		<!-- nasty stuff feel free to fork and pr -->
-			<script>
-				{{- if .ReCaptcha.SiteKey }}
-				grecaptcha.ready(function() {
-					grecaptcha.execute('{{ .ReCaptcha.SiteKey }}', {action: 'homepage'}).then(function(token) {
-						document.getElementById('recaptcha').value=token;
-					});
-				});
-				{{- end }}
+        <ul class="copyright">
+            <li>With ❤️ from Madrid</li>
+            <li>Design by <a href="https://twitter.com/ajlkn">@ajlkn</a></li>
+        </ul>
+        {{- if .ReCaptcha.SiteKey }}
+            <ul class="copyright">
+                <li>
+                    <small>This site is protected by reCAPTCHA and the Google
+                        <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+                        <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+                    </small>
+                </li>
+            </ul>
+        {{- end }}
+    </footer>
+</div>
 
-				// Github forkme popup
-				$(document).ready(function () {
-					// Hide password field
-					$(".passwordinput").hide();
-					$('.fa-github')
-					.popup({
-						inline     : true,
-						hoverable  : true
-					});
+<!-- Scripts -->
+<!-- nasty stuff feel free to fork and pr -->
+<script>
+    ClearForm();
+    {{- if .ReCaptcha.SiteKey }}
+    grecaptcha.ready(function () {
+        grecaptcha.execute('{{ .ReCaptcha.SiteKey }}', {action: 'homepage'}).then(function (token) {
+            document.getElementById('recaptcha').value = token;
+        });
+    });
+    {{- end }}
 
-					$(".password").change(function(){
-						if($(this).is(":checked")) {
-							$(".passwordinput").fadeIn();
-						} else if($(this).is(":not(:checked)")){
-							$(".passwordinput").fadeOut();
-							$(".passwordinput").val("");
-						}
-					});
+    $(document).ready(function () {
 
-				var popupTimer;
-				function delayPopup(popup) {
-					popupTimer = setTimeout(function() { $(popup).popup('hide') }, 1500);
-				}
+        //workaround because elements inside accordion for some reason are focused by default?
+        $('.maxhitcount').focus(function () {
+            $(this).css("border-color", "#ff7496");
+        });
+        $('.maxhitcount').focusout(function(){
+            $(this).css("border-color", "#c8cccf");
+        });
 
-					$('.clipboardbutton').click(function(){
-						clearTimeout(popupTimer);
-						var $input = $('#url');
-						$input.select();
-						document.execCommand("copy");
-						$input.blur();
-						$('.clipboardbutton')
-							.popup({
-								content: 'Successfully copied to clipboard!',
-								on: 'manual',										
-							})
-							.popup('show')
-							;
-							delayPopup('.clipboardbutton');
-					});
+        $('.ui.accordion')
+            .accordion()
+        ;
 
-					$('.button').click(function (){
-						this.blur();
-						if(validURL(document.getElementById("url").value)) {
-								var http = new XMLHttpRequest();
-								var endpoint = "{{ .Protocol }}://{{ .Domain }}:{{ .Port }}/short";
-								var url = document.getElementById("url").value;
-								var password = document.getElementById("passwordinput").value;
-								http.open("POST", endpoint, true);
-								recaptcha = document.getElementById('recaptcha').value;
-								http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-								http.setRequestHeader('Access-Control-Allow-Headers', '*');
-								http.onreadystatechange = function() {
-									if(http.readyState === 4 && (http.status === 201 || http.status === 200)) {
-										var json = JSON.parse(http.responseText);
-										document.getElementById("url").value = json.mapping;
-									}
-								}
-								http.send(JSON.stringify({url:url,token:recaptcha,password:password}));
-						} else {
-							$("#url").animate({
-								backgroundColor: 'rgba(255, 116, 150, .5)',
-							},{
-								duration: 2000,
-							});
-							$("#url").animate({
-								backgroundColor: 'white',
-							},{
-								duration: 2000,
-							});
-						}
-						{{- if .ReCaptcha.SiteKey }}
-						grecaptcha.execute('{{ .ReCaptcha.SiteKey }}', {action: 'homepage'}).then(function(token) {
-							document.getElementById('recaptcha').value=token;
-						});
-						{{ end }}
-					});
-				});
+        $('.fa-github')
+            .popup({
+                inline: true,
+                hoverable: true
+            });
 
-				if ('addEventListener' in window) {
-					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-preload\b/, ''); });
-					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
-				}
+        $('.maxhitcount.question')
+            .popup({
+                inline: true,
+                title: 'Time To Live',
+                content: 'Delete the link after N number of visits, where N is a number between 0 (unlimited) and 1000.',
+                position: 'bottom center',
+                delay: {
+                    show: 50,
+                    hide: 0
+                },
+                target: '.maxhitcount'
+            });
 
-				function validURL(str) {
-					var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-						'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-						'((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-						'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-						'(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-						'(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-					return !!pattern.test(str);
-				}
-			</script>
-	</body>
+        var popupTimer;
+        function delayPopup(popup) {
+            popupTimer = setTimeout(function () {
+                $(popup).popup('hide')
+            }, 1500);
+        }
+
+        $('.clipboardbutton').click(function () {
+            clearTimeout(popupTimer);
+            var $input = $('#url');
+            $input.select();
+            document.execCommand("copy");
+            $input.blur();
+            $('.clipboardbutton')
+                .popup({
+                    content: 'Successfully copied to clipboard!',
+                    on: 'manual',
+                })
+                .popup('show')
+            ;
+            delayPopup('.clipboardbutton');
+        });
+
+        $('.button').click(function () {
+            this.blur();
+            if (validURL(document.getElementById("url").value)) {
+                var http = new XMLHttpRequest();
+                var endpoint = "{{ .Protocol }}://{{ .Domain }}:{{ .Port }}/short";
+                var url = document.getElementById("url").value;
+                var password = document.getElementById("passwordinput").value;
+                http.open("POST", endpoint, true);
+                recaptcha = document.getElementById('recaptcha').value;
+                http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                http.setRequestHeader('Access-Control-Allow-Headers', '*');
+                http.onreadystatechange = function () {
+                    if (http.readyState === 4 && (http.status === 201 || http.status === 200)) {
+                        var json = JSON.parse(http.responseText);
+                        document.getElementById("url").value = json.mapping;
+                    }
+                }
+                http.send(JSON.stringify({url: url, token: recaptcha, password: password}));
+            } else {
+                $("#url").animate({
+                    backgroundColor: 'rgba(255, 116, 150, .5)',
+                }, {
+                    duration: 2000,
+                });
+                $("#url").animate({
+                    backgroundColor: 'white',
+                }, {
+                    duration: 2000,
+                });
+            }
+            {{- if .ReCaptcha.SiteKey }}
+            grecaptcha.execute('{{ .ReCaptcha.SiteKey }}', {action: 'homepage'}).then(function (token) {
+                document.getElementById('recaptcha').value = token;
+            });
+            {{ end }}
+        });
+    });
+
+    if ('addEventListener' in window) {
+        window.addEventListener('load', function () {
+            document.body.className = document.body.className.replace(/\bis-preload\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+    }
+
+    function validURL(str) {
+        var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+        return !!pattern.test(str);
+    }
+
+    function ClearForm() {
+        document.getElementById("url").value = "";
+        document.getElementById("passwordinput").value = "";
+        document.getElementById("maxhitcount").value = "";
+    }
+</script>
+</body>
 </html>

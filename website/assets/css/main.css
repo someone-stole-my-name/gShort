@@ -154,20 +154,29 @@
 			opacity: 1;
 		}
 
+/* fixme */
+#passwordinput {
+	margin-bottom: 10px;
+}
+.ui.popup > .header + .content {
+	padding: initial;
+	letter-spacing: inherit;
+}
+
 /* Type */
 
-	body, input, select, textarea {
+	body, input, select, textarea, .ui.accordion .title:not(.ui), .ui.icon.input > input {
 		color: #414f57;
 		font-family: "Source Sans Pro", Helvetica, sans-serif;
 		font-size: 14pt;
 		font-weight: 300;
-		line-height: 2;
+		/*line-height: 2;*/
 		letter-spacing: 0.2em;
 	}
 
 		@media screen and (max-width: 1680px) {
 
-			body, input, select, textarea {
+			body, input, select, textarea, .ui.accordion .title:not(.ui), .ui.icon.input > input {
 				font-size: 11pt;
 			}
 
@@ -175,7 +184,7 @@
 
 		@media screen and (max-width: 480px) {
 
-			body, input, select, textarea {
+			body, input, select, textarea, .ui.accordion .title:not(.ui), .ui.icon.input > input {
 				font-size: 10pt;
 				line-height: 1.75;
 			}
@@ -362,6 +371,8 @@
 	input[type="password"],
 	input[type="email"],
 	input[type="tel"],
+	input[type="number"],
+	.ui.icon.input > input,
 	select,
 	textarea {
 		-moz-appearance: none;
@@ -422,6 +433,7 @@
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+	input[type="number"],
 	select {
 		height: 2.75em;
 	}
@@ -842,6 +854,7 @@
 		input[type="submit"]:hover,
 		input[type="reset"]:hover,
 		input[type="button"]:hover,
+		.ui.styled.accordion .title:hover,
 		button:hover,
 		.button:hover {
 			border-color: #ff7496;

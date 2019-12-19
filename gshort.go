@@ -157,7 +157,7 @@ func gShortPut(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if len(a.Password) == 0 || a.MaxHitCount > 0 { // Password protected urls will return false bypassing the check, always create a new mapping
+	if len(a.Password) == 0 || a.MaxHitCount == 0 { // Password protected urls will return false bypassing the check, always create a new mapping
 		mappingInDB, err := DataBase.FilterFromURL(config.MongoDB, a.Url)
 		if err == nil {
 			mapping := buildMapping(config, mappingInDB)

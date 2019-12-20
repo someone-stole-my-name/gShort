@@ -4,8 +4,8 @@
     <title>gShort | {{ .SiteName }}</title>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/accordion.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/button.min.css" />
     <link rel="stylesheet" href="assets/css/main.css"/>
 </head>
 <body class="is-preload">
@@ -41,10 +41,9 @@
             </div>
 
             <ul class="actions special">
-                <li><input type="button" class="button" id="button" value="Shorten URL"/></li>
-                <li>
-                    <button class="clipboardbutton" type="button"><i class="fas fa-copy"></i></button>
-                </li>
+                <li><button type="button" class="ui button" id="button">Shorten URL</button></li>
+                <!-- <li><input type="button" class="button" id="button" value="Shorten URL"/></li> -->
+                <li><button class="clipboardbutton" type="button"><i class="fas fa-copy"></i></button></li>
             </ul>
             {{- if .ReCaptcha.SiteKey }}
                 <input type="hidden" id="recaptcha" name="recaptcha">
@@ -64,11 +63,14 @@
             <script type="text/javascript"
                     src="https://www.google.com/recaptcha/api.js?render={{ .ReCaptcha.SiteKey }}"></script>
         {{- end }}
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/transition.min.css" />
+
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-        <script type="text/javascript"
-                src="https://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
-        <script type="text/javascript"
-                src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/accordion.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/components/popup.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/components/transition.min.js"></script>
         <script type="text/javascript" src="https://code.jquery.com/color/jquery.color-2.1.2.js"></script>
 
         <ul class="copyright">
@@ -120,6 +122,17 @@
                 hoverable: true
             });
 
+        function InvalidURL() {
+            $('#url')
+                .popup({
+                    content: 'Invalid URL',
+                    on: 'manual',
+                })
+                .popup('show')
+            ;
+            delayPopup('#url');
+        }
+
         $('.maxhitcount.question')
             .popup({
                 inline: true,
@@ -157,8 +170,10 @@
         });
 
         $('.button').click(function () {
-            this.blur();
-            if (validURL(document.getElementById("url").value)) {
+            $(this).blur();
+            $(this).addClass("loading");
+            if (validURL($("#url").val())) {
+                $('.ui.accordion').accordion('close', 0);
                 var http = new XMLHttpRequest();
                 var endpoint = "{{ .Protocol }}://{{ .Domain }}:{{ .Port }}/short";
                 var url = document.getElementById("url").value;
@@ -172,20 +187,13 @@
                     if (http.readyState === 4 && (http.status === 201 || http.status === 200)) {
                         var json = JSON.parse(http.responseText);
                         document.getElementById("url").value = json.mapping;
+                        $(".button").removeClass("loading");
                     }
                 }
                 http.send(JSON.stringify({url: url, token: recaptcha, password: password, maxhitcount:parseInt(ttl)}));
             } else {
-                $("#url").animate({
-                    backgroundColor: 'rgba(255, 116, 150, .5)',
-                }, {
-                    duration: 2000,
-                });
-                $("#url").animate({
-                    backgroundColor: 'white',
-                }, {
-                    duration: 2000,
-                });
+                InvalidURL();
+                $(".button").removeClass("loading");
             }
             {{- if .ReCaptcha.SiteKey }}
             grecaptcha.execute('{{ .ReCaptcha.SiteKey }}', {action: 'homepage'}).then(function (token) {
@@ -202,6 +210,51 @@
         document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
     }
 
+    //check if ttl is a number in valid range on every input and set border-color to green when input is correct
+    $('#maxhitcount').on('input',function(e){
+        if (isPositiveInt($("#maxhitcount").val())) {
+            $('#maxhitcount').css('border-color', "#01FF70");
+        } else { $('#maxhitcount').css("border-color", "#ff7496"); }
+    });
+    $('#maxhitcount').focusout(function(){
+        $(this).css("border-color", "#c8cccf");
+    });
+    $('#maxhitcount').focus(function () {
+        if (isPositiveInt($("#maxhitcount").val())) {
+            $('#maxhitcount').css('border-color', "#01FF70");
+        } else { $('#maxhitcount').css("border-color", "#ff7496"); }
+    });
+
+    //check the password on every input and set border-color to green when input is correct
+    $('#passwordinput').on('input',function(e){
+        if ($("#passwordinput").val().length > 2) {
+            $('#passwordinput').css('border-color', "#01FF70");
+        } else { $('#passwordinput').css("border-color", "#ff7496"); }
+    });
+    $('#passwordinput').focusout(function(){
+        $(this).css("border-color", "#c8cccf");
+    });
+    $('#passwordinput').focus(function () {
+        if ($("#passwordinput").val().length > 2) {
+            $('#passwordinput').css('border-color', "#01FF70");
+        } else { $('#passwordinput').css("border-color", "#ff7496"); }
+    });
+
+    //check the url on every input and set border-color to green when input is correct
+    $('#url').on('input',function(e){
+        if (validURL($("#url").val())) {
+            $('#url').css('border-color', "#01FF70");
+        } else { $('#url').css("border-color", "#ff7496"); }
+    });
+    $('#url').focusout(function(){
+        $(this).css("border-color", "#c8cccf");
+    });
+    $('#url').focus(function () {
+        if (validURL($("#url").val())) {
+            $('#url').css('border-color', "#01FF70");
+        } else { $('#url').css("border-color", "#ff7496"); }
+    });
+
     function validURL(str) {
         var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -211,6 +264,7 @@
             '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
         return !!pattern.test(str);
     }
+    function isPositiveInt(s) { return !!s.match(/^[0-9]+$/); }
 
     function ClearForm() {
         document.getElementById("url").value = "";

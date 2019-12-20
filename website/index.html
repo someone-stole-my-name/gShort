@@ -103,6 +103,13 @@
     {{- end }}
 
     $(document).ready(function () {
+        //default enter action
+        $(document).keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                $('.button').click();
+            }
+        });
 
         //workaround because elements inside accordion for some reason are focused by default?
         $('.maxhitcount').focus(function () {

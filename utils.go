@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
-	rice "github.com/GeertJohan/go.rice"
 	"gShort/Config"
+	"gShort/DataBase"
+	rice "github.com/GeertJohan/go.rice"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -11,6 +13,23 @@ import (
 	"text/template"
 	"time"
 )
+
+// Increases the hitcount of a mapping and deletes the mapping if maxhit is reached
+func hitCounter(config *Config.Config, mapping string) (err error) {
+	record, err := DataBase.IncreaseHitCount(config.MongoDB, mapping)
+	if err != nil {
+		log.Printf("Error while increasing hitcount: %v", err)
+	}
+	if record.MaxHitCount > 0 {
+		if record.HitCount >= record.MaxHitCount {
+			err = record.Delete(config.MongoDB)
+			if err != nil {
+				log.Printf("Error while deleting record: %v", err)
+			}
+		}
+	}
+	return
+}
 
 // Checks whether a box has a specific file
 func boxHasFile(box *rice.Box, file string) bool {

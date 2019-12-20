@@ -12,10 +12,13 @@ type Record struct {
 	Url 	string `json:"url"`
 	Mapping string `json:"maps"`
 	Password string `json:"url"`
+	HitCount int `json:"hitcount"`
+	MaxHitCount int `json:"maxhitcount"`
 }
 
 // Boilerplate to connect to MongoDB and return a client and collection ready to use
 // TODO: Create 1 and reuse ?
+// TODO: All functions should return a record instead
 func newClient(a *Config.MongoDB) (client *mongo.Client, collection *mongo.Collection, err error) {
 	clientOptions := options.Client().ApplyURI(a.URI)
 	client, err = mongo.Connect(context.TODO(), clientOptions)
@@ -31,12 +34,12 @@ func newClient(a *Config.MongoDB) (client *mongo.Client, collection *mongo.Colle
 }
 
 // Create a new mapping in the DB
-func Insert(a *Config.MongoDB, url string, mapping string, password string) (result *mongo.InsertOneResult, err error) {
+func Insert(a *Config.MongoDB, url string, mapping string, password string, maxhitcount int) (result *mongo.InsertOneResult, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
 		return
 	}
-	rb := Record{Url:url, Mapping:mapping, Password:password}
+	rb := Record{Url:url, Mapping:mapping, Password:password, HitCount:0, MaxHitCount:maxhitcount}
 	result, err = collection.InsertOne(context.TODO(), rb)
 	if err != nil {
 		return
@@ -111,10 +114,10 @@ func IsPasswordProtected(a *Config.MongoDB, mapping string) (b bool, password st
 }
 
 //Increases hitcount of a mapping by 1
-func IncreaseHitCount(a *Config.MongoDB, mapping string) error {
+func IncreaseHitCount(a *Config.MongoDB, mapping string) (r* Record, err error) {
 	client, collection, err := newClient(a)
 	if err != nil {
-		return err
+		return
 	}
 	filter := bson.D{{"mapping", mapping}}
 	update := bson.D{
@@ -123,6 +126,26 @@ func IncreaseHitCount(a *Config.MongoDB, mapping string) error {
 		}},
 	}
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return
+	}
+
+	err = collection.FindOne(context.TODO(), filter).Decode(&r)
+	if err != nil {
+		return
+	}
+
 	err = client.Disconnect(context.TODO())
-	return err
+	return
+}
+
+// Deletes the Record on the given collection
+func (r* Record) Delete(a *Config.MongoDB) (err error) {
+	client, col, err := newClient(a)
+	if err != nil {
+		return
+	}
+	_, err = col.DeleteOne(context.TODO(), bson.D{{"mapping", r.Mapping}})
+	err = client.Disconnect(context.TODO())
+	return
 }

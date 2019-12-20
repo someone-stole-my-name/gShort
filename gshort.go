@@ -225,7 +225,7 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error: %v", err)
 			http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port),
-				http.StatusMovedPermanently)
+				http.StatusFound)
 			return
 		}
 		w.WriteHeader(http.StatusAccepted)
@@ -240,11 +240,11 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("Error: %v", err)
 		http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port),
-			http.StatusMovedPermanently)
+			http.StatusFound)
 		return
 	}
 
-	http.Redirect(w, r, mapsTo, http.StatusMovedPermanently)
+	http.Redirect(w, r, mapsTo, http.StatusFound)
 	err = hitCounter(config, mapping)
 	if err != nil {
 		log.Printf("Error in hitCounter: %v", err)

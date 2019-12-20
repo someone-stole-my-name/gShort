@@ -70,7 +70,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/short", func(w http.ResponseWriter, r *http.Request) {
 		if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
-			http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusMovedPermanently)
+			http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusFound)
 			return
 		}
 
@@ -80,7 +80,7 @@ func main() {
 	router.PathPrefix("/password/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
-				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port)+r.RequestURI, http.StatusMovedPermanently)
+				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port)+r.RequestURI, http.StatusFound)
 				return
 			}
 
@@ -95,7 +95,7 @@ func main() {
 		func(w http.ResponseWriter, r *http.Request) {
 			// index request
 			if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
-				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusMovedPermanently)
+				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusFound)
 				return
 			}
 
@@ -118,7 +118,7 @@ func main() {
 	router.PathPrefix("/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			if !comingFromDomain(config.Domain, config.Port, r) { // make sure user is coming from configurated domain
-				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusMovedPermanently)
+				http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusFound)
 				return
 			}
 			w.Header().Set("Access-Control-Allow-Origin", config.Protocol+"://"+config.Domain)
@@ -222,7 +222,7 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Printf("Error: %v", err)
 			http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port),
-				http.StatusMovedPermanently)
+				http.StatusFound)
 			return
 		}
 		w.WriteHeader(http.StatusAccepted)
@@ -232,12 +232,11 @@ func gShortGet(config *Config.Config, w http.ResponseWriter, r *http.Request) {
 	mapsTo, err := DataBase.FilterFromMapping(config.MongoDB, mapping)
 	if err != nil {
 		log.Printf("Error: %v", err)
-		http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port),
-			http.StatusMovedPermanently)
+		http.Redirect(w, r, config.Protocol+"://"+config.Domain+":"+strconv.Itoa(config.Port), http.StatusFound)
 		return
 	}
 
-	http.Redirect(w, r, mapsTo, http.StatusMovedPermanently)
+	http.Redirect(w, r, mapsTo, http.StatusFound)
 	err = DataBase.IncreaseHitCount(config.MongoDB, mapping)
 	if err != nil {
 		log.Printf("Error while increasing hitcount: %v", err)

@@ -187,7 +187,11 @@
                 var password = document.getElementById("passwordinput").value;
                 var ttl = document.getElementById("maxhitcount").value;
                 http.open("POST", endpoint, true);
+                {{- if .ReCaptcha.SiteKey }}
                 var recaptcha = document.getElementById('recaptcha').value;
+                {{ else }}
+                var recaptcha = "";
+                {{ end }}
                 http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 http.setRequestHeader('Access-Control-Allow-Headers', '*');
                 http.onreadystatechange = function () {

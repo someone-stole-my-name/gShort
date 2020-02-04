@@ -15,6 +15,7 @@ gShort is a URL shortener that you can selfhost or easily deploy to a PaaS. ([De
  * Password protected links
  * One Time Links or any custom TTL
  * Custom charset and length
+ * Optional reCAPTCHA v3
 
 ## Configuration
 

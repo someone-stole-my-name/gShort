@@ -8,7 +8,7 @@
 
 ## Overview
 
-gShort is a URL shortener that you can selfhost or easily deploy to a PaaS. ([Demo Site on Heroku][gshort_demo_site])
+gShort is a URL shortener that you can selfhost or easily deploy to a PaaS.
 
 ### Features
 
